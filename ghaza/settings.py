@@ -25,7 +25,7 @@ SECRET_KEY = '@py+ageirh^+%fed(@n5n@h2m$ewf)a%xf5w!63-^ck1q*2dc+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['142.93.100.47','ghaza.ovh','www.ghaza.ovh','localhost']
+ALLOWED_HOSTS = ['142.93.100.47','ghaza.ovh','www.ghaza.ovh','localhost','127.0.0.1']
 
 
 # Application definition
@@ -80,16 +80,16 @@ WSGI_APPLICATION = 'ghaza.wsgi.application'
    # }
 #}
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'ghaza_db',
-        'USER': 'ghaza',
-        'PASSWORD': 'ghaza123456',
-        'HOST': 'localhost',
-        'PORT': '',
-    }
-}
+# DATABASES = {
+    # 'default': {
+        # 'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        # 'NAME': 'ghaza_db',
+        # 'USER': 'ghaza',
+        # 'PASSWORD': 'ghaza123456',
+        # 'HOST': 'localhost',
+        # 'PORT': '',
+    # }
+# }
 
 
 # Password validation
@@ -130,3 +130,10 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
+
+
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
