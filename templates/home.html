@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+
+
+{% block content %}
+
+<div class="row">
+<div class="col">
+  <a class="btn btn-info btn-rounded" href="{% url 'generate_new_dataset' %}">
+  <i class="fa fa-plus-circle"></i> توليد مجموعة بيانات جديدة</a>
+</div>
+</div>
+
+<br> <br>
+
+{% endblock %}

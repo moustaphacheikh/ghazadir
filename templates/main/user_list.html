@@ -1,0 +1,174 @@
+ {% extends 'base.html' %}
+
+ {% block title %}Users{% endblock %}
+
+{% block content %}
+
+<div class="row">
+  <div class="col">
+    <a class="btn btn-success btn-rounded" href="{% url 'signup' %}"> <i class="fa fa-plus-circle"></i>
+    تسجيل وكبل جديد</a>
+  </div>
+</div>
+  <br>
+  <br>
+
+  {% if user_list %}
+  <div class="row">
+      <table class="table color-bordered-table info-bordered-table">
+          <thead class="table-success">
+            <tr>
+              <th scope="col">الإسم</th>
+              <th scope="col">اللقب</th>
+              <th scope="col">الهاتف</th>
+              <th scope="col">العنوان</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for user in user_list %}
+            <tr>
+              <th><a href="{{ user.get_absolute_url }}">{{ user.first_name }}</a></th>
+              <td>{{ user.last_name }}</td>
+              <td>{{ user.phone_number }}</td>
+              <td>{{ user.location }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% if is_paginated %}
+        <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+        {% else %}
+            <li class="page-item disabled"><span><i class="page-link fa fa-chevron-right" aria-hidden="true"></i></span></li>
+        {% endif %}
+        {% if page_obj.number|add:'-4' > 1 %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+        {% endif %}
+        {% for i in page_obj.paginator.page_range %}
+            {% if page_obj.number == i %}
+                <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+                <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+        {% endif %}
+        {% if page_obj.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+        {% else %}
+            <li class="page-item disabled"><span class="page-link"><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
+        {% endif %}
+        </ul>
+        {% endif %}
+  </div>
+  {% else %}
+  <div class="h4 alert alert-success" role="alert">
+    النظام ليس لديه أي نقلات مسجلة! </br>
+  يمكنك دائمًا إنشاء نقل جديد بواسطة الزر أعلاه أو باستخدام رسالة نصية بالتنسيق التالي: </br>
+  رقم المستفيد * المبلغ * الرسم * رقم وكيل المتلقي
+  </div>
+  {% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!-- {% if user_list %}
+  <div class="row">
+    <table class="table color-bordered-table success-bordered-table">
+      <thead class="table-info">
+        <tr>
+          <th scope="col">الإسم</th>
+          <th scope="col">اللقب</th>
+          <th scope="col">الهاتف</th>
+          <th scope="col">العنوان</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user in user_list %}
+        <tr>
+          <td><a href="{{ user.get_absolute_url }}">{{ user.first_name }}</a></td>
+          <td>{{ user.last_name }}</td>
+          <td>{{ user.phone_number }}</td>
+          <th>{{ user.location }}</th>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% if is_paginated %}
+    <ul class="pagination">
+    {% if page_obj.has_previous %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+    {% else %}
+        <li class="page-item disabled"><span><i class="page-link fa fa-chevron-right" aria-hidden="true"></i></span></li>
+    {% endif %}
+    {% if page_obj.number|add:'-4' > 1 %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+    {% endif %}
+    {% for i in page_obj.paginator.page_range %}
+        {% if page_obj.number == i %}
+            <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+        {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+            <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+        {% endif %}
+    {% endfor %}
+    {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+    {% endif %}
+    {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+    {% else %}
+        <li class="page-item disabled"><span class="page-link"><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
+    {% endif %}
+    </ul>
+    {% endif %}
+  </div>
+
+  {% else %}
+  <p class="h4 alert alert-info">لا يوجد وكيل في النظام! </br>
+    الرجاء إضافة وكلاء جدد ليتمكنوا من إرسال واستقبال باستخدام النظام.</p>
+  {% endif %} -->
+
+
+  {% endblock %}

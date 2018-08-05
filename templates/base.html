@@ -1,0 +1,125 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <title>{% block title %} {% endblock title %} </title>
+  <link href="{% static 'css/bootstrap.min.css' %}" rel="stylesheet">
+  <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+<link href="{% static 'css/pages/stylish-tooltip.css' %}" rel="stylesheet">
+<link href="{% static 'assets/node_modules/chartist-js/dist/chartist.min.css' %}" rel="stylesheet">
+<link href="{% static 'assets/node_modules/chartist-js/dist/chartist-init.css' %}" rel="stylesheet">
+<link href="{% static 'assets/node_modules/chartist-plugin-tooltip-master/dist/chartist-plugin-tooltip.css' %}" rel="stylesheet">
+
+<link href="{% static 'assets/node_modules/css-chart/css-chart.css' %}" rel="stylesheet">
+    <!-- Custom CSS -->
+<link href="{% static 'css/style.min.css' %}" rel="stylesheet">
+    <!-- page css -->
+<link href="{% static 'css/pages/widget-page.css' %}" rel="stylesheet"> 
+
+
+  <!-- Custom styles -->
+  <style>
+    @media (min-width: 292px) {
+      body {
+        padding-top: 70px;
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-light rtl">
+  <!-- Navigation -->
+  <div class="container">
+    <div class="container-fluid">
+      <!--Navbar-->
+      <nav class="navbar navbar-expand-sm navbar-dark bg-purple fixed-top">
+
+  		<div class="container">
+  			<a class="navbar-brand h3" href="{% url 'home' %}">
+  					 <img src="{% static 'logo.png' %}" width="35" height="35" class="d-inline-block align-top" alt="">
+  				 </a>
+  			<div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2">
+
+  				<ul class="navbar-nav mr-auto">
+
+  					{% if request.user.is_authenticated %}
+
+  					<li class="nav-item h5">
+  						<a class="nav-link font-weight-bold" href="{% url 'user-list' %}">الوكلاء</a>
+
+  					</li>
+  					<li class="nav-item h5">
+  						<a class="nav-link font-weight-bold" href="{% url 'transtaction-list' %}">التحويلات</a>
+  					</li>
+
+  					{% endif %}
+  				</ul>
+  			</div>
+  			<a class="navbar-brand h3" href="{% url 'dashboard' %}">
+  					<img src="{% static 'admin.png' %}" width="35" height="35" class="d-inline-block align-top" alt="">
+  				</a>
+  			<div class="mx-auto order-0">
+
+  				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+  	            <span class="navbar-toggler-icon"></span>
+  	        </button>
+  			</div>
+
+  			<div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+  				<ul class="navbar-nav ml-auto">
+  					{% if request.user.is_authenticated %}
+  					<li class="nav-item h4">
+
+  						<a class="nav-link font-weight-bold" href="{{ request.user.get_absolute_url }}">
+
+                  <img src="{% static 'profile.png' %}" width="30" height="30" class="d-inline-block align-top" alt="">
+              </a>
+  					</li>
+  					<li class="nav-item h4">
+  						<a class="nav-link font-weight-bold" href="{% url 'logout' %}">خروج</a>
+  					</li>
+
+  					{% else %}
+             {% if request.user.is_superuser %}
+  					<!-- <li class="nav-item h4">
+  						<a id="sign-up-link" class="nav-link font-weight-bold" href="{% url 'signup' %}">تسجيل</a>
+  					</li> -->
+  					{% endif %}
+  					<li class="nav-item h4">
+  						<a id="log-in-link" class="nav-link font-weight-bold" href="{% url 'login' %}">دخول</a>
+  					</li>
+  					{% endif %}
+  				</ul>
+  			</div>
+  		</div>
+  	</nav>
+  </div>
+
+  <!-- Begin page content -->
+  <main role="main" class="container">
+    <br><br><br> {% block content %} {% endblock %}
+  </main>
+  </br>
+
+
+
+
+  <!-- All Jquery -->
+       <!-- ============================================================== -->
+       <script src="{% static 'assets/node_modules/jquery/jquery-3.2.1.min.js' %}"></script>
+
+       <script src="{% static 'assets/node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+
+       <!-- ============================================================== -->
+       <!-- This page plugins -->
+       <!-- ============================================================== -->
+       <!--morris JavaScript -->
+
+</body>
+
+</html>

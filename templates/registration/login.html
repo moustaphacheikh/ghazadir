@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+{% load crispy_forms_tags %}
+{% block title %}تسجيل الدخول{% endblock %}
+
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-sm-10 col-md-6 col-lg-4">
+      <div class="card">
+        <div class="card-body">
+          <h2 class="card-title text-center">تسجيل الدخول</h2>
+          {% if form.errors %}
+            <p class="card-text">اسم المستخدم وكلمة المرور غير متطابقين. المرجو اعادة المحاولة.</p>
+            {% else %}
+            <p class = "card-text"> الرجاء استخدام النموذج التالي لتسجيل الدخول. إذا لم يكن لديك حساب ،
+                 <a href="{% url 'signup' %}"> قم بالتسجيل هنا </a>
+              </p>
+              {% endif %}
+
+              {% if next %}
+              {% if user.is_authenticated %}
+              <p>حسابك ليس لديه حق الوصول إلى هذه الصفحة. للمتابعة ، يرجى تسجيل الدخول باستخدام حساب لديه حق الوصول.</p>
+              {% else %}
+              <p>يرجى تسجيل الدخول لمشاهدة هذه الصفحة.</p>
+              {% endif %}
+          {% endif %}
+
+
+
+              <form action="{% url 'login' %}" method="post">
+
+                  {{ form |crispy}} {% csrf_token %}
+
+                  <input type="hidden" name="next" value="{{ next }}" />
+
+                  <p>
+                    <button type="submit" class="btn btn-info btn-block">تسجيل الدخول</button>
+                  </p>
+                  <input type="hidden" name="next" value="{{ next }}" />
+                  </form>
+                  {# <p> <a href="{% url 'password_reset' %}">هل نسيت كلمة المرور؟</a>  </p> #}
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+
+{% endblock %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block title %}غير متصل{% endblock %}
+
+{% block content %}
+  <h1>غير متصل</h1>
+  <p>لقد تم قطع اتصالك بنجاح. يمكنك <a href="{% url 'login' %}"> تسجيل الدخول </a>.</p>
+{% endblock %}
