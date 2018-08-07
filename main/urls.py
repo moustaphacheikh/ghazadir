@@ -7,11 +7,13 @@ urlpatterns = [
     path('', views.HomePageView.as_view(), name='home'),
 
     path('dashboard', views.DashboardView.as_view(), name='dashboard'),
-
     path('sms_response/', views.sms_response,name='inbound_view'),
+    path('client_search/', views.client_search,name='client_search'),
+    path('agent_search/', views.agent_search,name='agent_search'),
 
     path('user/transtaction/',views.new_transtaction, name='new_transtaction'),
     path('transtaction/list', views.TransactionListView.as_view(), name='transtaction-list'),
+    path('transtactions', views.Transactions.as_view(), name='transtactions'),
     path('user/list', views.UserListView.as_view(), name='user-list'),
     path('user/signup/', views.SignUp.as_view(), name='signup'),
     path('user/update/<int:pk>/', views.UserUpdateView.as_view(), name='user-update'),

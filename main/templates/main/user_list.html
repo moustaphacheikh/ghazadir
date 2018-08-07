@@ -3,15 +3,16 @@
  {% block title %}Users{% endblock %}
 
 {% block content %}
-
+{% if request.user.is_admin %}
 <div class="row">
   <div class="col">
     <a class="btn btn-success btn-rounded" href="{% url 'signup' %}"> <i class="fa fa-plus-circle"></i>
-    تسجيل وكبل جديد</a>
+      تسجيل وكبل جديد</a>
+    </div>
   </div>
-</div>
   <br>
-  <br>
+
+{% endif %}
 
   {% if user_list %}
   <div class="row">
@@ -22,6 +23,7 @@
               <th scope="col">اللقب</th>
               <th scope="col">الهاتف</th>
               <th scope="col">العنوان</th>
+              <th scope="col">المدينة</th>
             </tr>
           </thead>
 
@@ -32,9 +34,11 @@
               <td>{{ user.last_name }}</td>
               <td>{{ user.phone_number }}</td>
               <td>{{ user.location }}</td>
+              <td>{{ user.city }}</td>
             </tr>
             {% endfor %}
           </tbody>
+          
         </table>
         {% if is_paginated %}
         <ul class="pagination">

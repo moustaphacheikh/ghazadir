@@ -19,7 +19,7 @@
     <!-- Custom CSS -->
 <link href="{% static 'css/style.min.css' %}" rel="stylesheet">
     <!-- page css -->
-<link href="{% static 'css/pages/widget-page.css' %}" rel="stylesheet"> 
+<link href="{% static 'css/pages/widget-page.css' %}" rel="stylesheet">
 
 
   <!-- Custom styles -->
@@ -53,16 +53,25 @@
   						<a class="nav-link font-weight-bold" href="{% url 'user-list' %}">الوكلاء</a>
 
   					</li>
-  					<li class="nav-item h5">
-  						<a class="nav-link font-weight-bold" href="{% url 'transtaction-list' %}">التحويلات</a>
-  					</li>
+  					{% if request.user.is_admin%}
+            <li class="nav-item h5">
+              <a class="nav-link font-weight-bold" href="{% url 'transtaction-list' %}">التحويلات</a>
+            </li>
+            {% endif %}
+
+            <li class="nav-item h5">
+              <a class="nav-link font-weight-bold" href="{% url 'transtactions' %}">التحويلات</a>
+            </li>
+
 
   					{% endif %}
   				</ul>
   			</div>
-  			<a class="navbar-brand h3" href="{% url 'dashboard' %}">
-  					<img src="{% static 'admin.png' %}" width="35" height="35" class="d-inline-block align-top" alt="">
-  				</a>
+        {% if request.user.is_admin %}
+        <a class="navbar-brand h3" href="{% url 'dashboard' %}">
+          <img src="{% static 'admin.png' %}" width="35" height="35" class="d-inline-block align-top" alt="">
+        </a>
+       {% endif %}
   			<div class="mx-auto order-0">
 
   				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
@@ -85,11 +94,7 @@
   					</li>
 
   					{% else %}
-             {% if request.user.is_superuser %}
-  					<!-- <li class="nav-item h4">
-  						<a id="sign-up-link" class="nav-link font-weight-bold" href="{% url 'signup' %}">تسجيل</a>
-  					</li> -->
-  					{% endif %}
+
   					<li class="nav-item h4">
   						<a id="log-in-link" class="nav-link font-weight-bold" href="{% url 'login' %}">دخول</a>
   					</li>
@@ -102,7 +107,7 @@
 
   <!-- Begin page content -->
   <main role="main" class="container">
-    <br><br><br> {% block content %} {% endblock %}
+    <br> {% block content %} {% endblock %}
   </main>
   </br>
 

@@ -1,17 +1,49 @@
-{% extends 'base.html' %}
-
-{% block title %}Home{% endblock %}
-
-
-{% block content %}
+{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
 
 <div class="row">
-<div class="col">
-  <a class="btn btn-info btn-rounded" href="{% url 'generate_new_dataset' %}">
+  <div class="col">
+    <a class="btn btn-info btn-rounded" href="{% url 'generate_new_dataset' %}">
   <i class="fa fa-plus-circle"></i> توليد مجموعة بيانات جديدة</a>
-</div>
+  </div>
 </div>
 
 <br> <br>
+
+<div class="row">
+  <div class="col-md-6">
+    <div class="card border-dark">
+      <div class="card-header bg-danger">
+        <h4 class="m-b-0 text-white"></h4>البحث عن زبون محدد</div>
+      <div class="card-body">
+        <p class="card-text">هل تحتاج إلى المعاملات المتعلقة بزبون معين؟ ضع رقم هاتفه وانقر فوق بحث</p>
+        <form class="form text-center" action="{% url 'client_search' %}" method="GET">
+          <div class="form-group">
+            <input class="form-control" type="text" name="phone_number" placeholder="هاتف الزبون" autofocus/>
+          </div>
+          <input class="btn btn-danger" type="submit" value="بحث" />
+        </form>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-6">
+    <div class="card border-primary">
+      <div class="card-header bg-primary">
+        <h4 class="m-b-0 text-white"></h4 class="text-white">ابحث عن وكيل معين</div>
+      <div class="card-body">
+        <p class="card-text">هل تحتاج إلى المعاملات المتعلقة بوكيل معين؟ ضع رقمه وانقر فوق بحث</p>
+        <form class="form text-center" action="{% url 'agent_search' %}" method="GET">
+          <div class="form-group">
+            <input class="form-control" type="text" name="phone_number" placeholder="هاتف الزبون" autofocus/>
+          </div>
+          <input class="btn btn-primary" type="submit" value="بحث" />
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
 
 {% endblock %}

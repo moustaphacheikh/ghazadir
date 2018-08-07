@@ -10,10 +10,10 @@ from main import enums
 from twilio.rest import Client
 # Create your models here.
 import random
+import time
+from datetime import datetime
 def randomDate(start, end):
-    import random
-    import time
-    from datetime import datetime
+
     frmt = '%d-%m-%Y %H:%M'
 
     stime = time.mktime(time.strptime(start, frmt))
@@ -27,17 +27,17 @@ def randomDate(start, end):
 class User(AbstractUser):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_admin = models.BooleanField(verbose_name  ='صلاحية المدير',default=False)
+    is_admin = models.BooleanField(verbose_name ='صلاحية المدير',default=False)
     location = models.CharField(verbose_name  ='العنوان',max_length = 50)
     phone_regex = RegexValidator(regex=r'^\d{8}$', message="يجب أن تحتوي أرقام الهاتف على 8 أرقام.")
     phone_number = models.CharField(verbose_name  ='الهاتف',validators=[phone_regex], max_length=8,unique=True)
-    city = models.CharField(verbose_name  ='المدينة',max_length=25)#, choices=enums.CITY_CHOICES,default=enums.CITY_NKTT)
+    city = models.CharField(verbose_name  ='المدينة',max_length=25, choices=enums.CITY_CHOICES)
 
     def get_absolute_url(self):
         return reverse('user-detail', kwargs={'pk': self.id})
 
     def __str__(self):
-        return f'{self.last_name} {self.first_name} : {self.phone_number}'
+        return f'{self.first_name} {self.last_name} : {self.phone_number}'
 
     class Meta:
         ordering = ['created_at']
@@ -129,9 +129,9 @@ def dummydata(client):
 def get_client():
     return Client(settings.ACCOUNT_SID, settings.AUTH_TOKEN)
 
-def form_processing(form):
+def form_processing(form,user):
     data = form.cleaned_data
-    from_ag_num = data['from_agent_number']
+    from_ag_num = user.phone_number
     to_ag_num = data['to_agent_number']
     money = data['money']
     fee = data['fee']

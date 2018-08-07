@@ -82,10 +82,30 @@ class TransactionListView(LoginRequiredMixin,ListView):
 
         # context['some_data'] = 'This is just some data'
         return context
+class Transactions(LoginRequiredMixin,ListView):
+    model = Transaction
+    template_name = 'main/transactions.html'
+    context_object_name = 'transactions'  # Default: object_list
+    paginate_by = 10
+
+
+    def get_queryset(self):
+        yesterday = date.today() - timedelta(1)
+        return []
+
+    def get_context_data(self, **kwargs):
+        context = super(Transactions, self).get_context_data(**kwargs)
+        # Create any data and add it to the context
+        # context['range'] = range(context['paginator'].num_pages)
+        transactions = Transaction.objects.filter(Q(to_agent=self.request.user) | Q(from_agent=self.request.user))
+        context['transactions'] = transactions
+        return context
 
 class UserUpdateView(LoginRequiredMixin,UpdateView):
     model = User
-    fields = ['username','first_name','last_name','email']
+    # fields = ['username','first_name','last_name','email']
+    fields = ['phone_number','first_name', 'last_name','username','email','city',
+                'location','is_admin']
     success_url = reverse_lazy('home')
     template_name_suffix = '_update_form'
 
@@ -147,7 +167,7 @@ def new_transtaction(request):
             if TEST:
                 pass
             else:
-                form_clean = form_processing(form)
+                form_clean = form_processing(form,request.user)
                 to_cl_out = scv_cl_out(form_clean)
                 to_ag_out = scv_ag_out(form_clean)
                 trans = cs_trans_form(form_clean,to_cl_out,to_ag_out)
@@ -209,16 +229,41 @@ class DataGenerator:
 
         with open(f'{fnames}.txt','r',encoding='utf8') as file:
             for line in file.readlines():
-                if len(line.replace('\n','').split(' '))==4:
-                    names.append([' '.join(line.replace('\n','').split(' ')[:2]),
-                                  ' '.join(line.replace('\n','').split(' ')[-2:])])
+                names.append([line.replace('\n','').split('ولد')[0] , line.replace('\n','').split('ولد')[1]])
         return names,cities
     def gen_sid(self):
         allchar = string.ascii_letters + string.punctuation + string.digits
         return "".join(random.choice(allchar) for x in range(random.randint(34, 34)))
 
+def client_search(request):
+    num = request.GET.get("phone_number")
+    if num is None or num == "":
+        return render(request, 'main/client_detail.html', {'transactions': None})
+    else:
+        transactions = Transaction.objects.filter(beneficiary_number=num)
+        if transactions:
+            return render(request, 'main/client_detail.html', {'transactions': transactions})
+        else:
+            return render(request, 'main/client_detail.html', {'transactions': None})
+from django.db.models import Q
+
+def agent_search(request):
+    num = request.GET.get("phone_number")
 
 
+    if num is None or num == "":
+        return render(request, 'main/agent_detail.html', {'transactions': None})
+    else:
+        if request.user.is_admin:
+            transactions = Transaction.objects.filter(Q(from_agent__phone_number=num) | Q(to_agent__phone_number=num))
+        else:
+            transactions = Transaction.objects.filter(Q(from_agent__phone_number=num) | Q(to_agent__phone_number=num) & Q(to_agent__phone_number=request.user.phone_number) & Q(from_agent__phone_number=request.user.phone_number))
+        if transactions:
+            return render(request, 'main/agent_detail.html', {'transactions': transactions})
+        else:
+            return render(request, 'main/agent_detail.html', {'transactions': None})
+
+from main import enums
 def gen_user(gen,n):
 
     users ,cities = gen.get_names_cities_fname('main/names','main/cities')
@@ -233,8 +278,9 @@ def gen_user(gen,n):
         is_admin = False
         phone_number = gen.random_with_N_digits(8)
         username = phone_number
-        city = random.choice(cities)
+        city = random.choice([c[1] for c in enums.CITY_CHOICES])
         location = gen.gen_random_location()
+
         password = 'test123456test'
         user_dict = {'first_name':first_name,'last_name':last_name,'email':email,'is_admin':is_admin,
                     'password':password,
@@ -254,18 +300,19 @@ def gen_users(n):
                             location=user_dict['location'],
                             phone_number=user_dict['phone_number'],
                             email=user_dict['email'],
+                            city= user_dict['city'],
                             password=user_dict['password'],)
 # 15511310
 
 def gen_transactions(n):
     gen = DataGenerator()
-    users = User.objects.all()
+    users = User.objects.filter(is_superuser=False)
     numbers = [user.phone_number for user in users]
     for i in range(n):
         in_sid = gen.gen_sid()
         cl_num = gen.random_with_N_digits(8)
-        money = random.randint(500,15000000)
-        fee = int(money*random.uniform(0.01,0.10)*100)
+        money = random.randint(500,15000)
+        fee = int(money*random.uniform(0.01,0.07))
         from_ag_num = random.choice(numbers)
         body = f'{cl_num}*{money}*{fee}*{random.choice(numbers)}'
         body_ = body.split('*')
@@ -284,7 +331,7 @@ def gen_transactions(n):
         'to_ag_msg':to_ag_msg,'to':'+18135364577'}
         #cv_in(req_clean)
         in_msg = cv_in(req_clean)
-        date = created_at  =randomDate("01-01-2015 00:00", "03-08-2018 00:50")
+        date = created_at  =randomDate("01-01-2016 00:00", "03-08-2018 00:50")
 
         to_cl_out = OutboundMessage.objects.create(sid=gen.gen_sid(),
                                         sender=req_clean['to'],
@@ -309,8 +356,8 @@ def gen_transactions(n):
 
 @login_required
 def generate_new_dataset(request):
-    gen_users(10)
-    gen_transactions(10)
+    # gen_users(200)
+    # gen_transactions(1000)
     # return HttpResponseRedirect(reverse_lazy('transtaction-list'))
     return render(request, 'home.html', {'data': 'data'})
 

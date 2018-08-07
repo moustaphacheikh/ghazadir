@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% block title %}Transations{% endblock %}
+{% block content %}
+
+
+<div class="row">
+<div class="col">
+  <a class="btn btn-info btn-rounded" href="{% url 'new_transtaction' %}">
+  <i class="fa fa-plus-circle"></i> إضافة نقل جديد</a>
+</div>
+</div>
+
+<br>
+
+
+{% if transactions %}
+<div class="row">
+    <table class="table color-bordered-table info-bordered-table" cellspacing="0" width="100%">
+        <thead class="table-success">
+          <tr>
+              <th scope="col">الوكيل المورسل</th>
+              <th scope="col">الوكيل المستلم</th>
+              <th scope="col">المبلغ</th>
+            <th scope="col">الرسم</th>
+            <th scope="col">المستفيد</th>
+          </tr>
+        </thead>
+
+        <tbody class="">
+          {% for trans in transactions %}
+          <tr>
+        <th>{{ trans.from_agent }}</th>
+        <th>{{ trans.to_agent }}</th>
+        <th>{{ trans.money }}</th>
+        <th>{{ trans.fee }}</th>
+        <th>{{ trans.beneficiary_number }}</th>
+        </tr>
+          {% endfor %}
+
+        </tbody>
+      </table>
+      {% if is_paginated %}
+      <ul class="pagination">
+      {% if page_obj.has_previous %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"><i class="fa fa-chevron-right" aria-hidden="true"></i></a></li>
+      {% else %}
+          <li class="page-item disabled"><span><i class="page-link fa fa-chevron-right" aria-hidden="true"></i></span></li>
+      {% endif %}
+      {% if page_obj.number|add:'-4' > 1 %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'-5' }}">&hellip;</a></li>
+      {% endif %}
+      {% for i in page_obj.paginator.page_range %}
+          {% if page_obj.number == i %}
+              <li class="page-item active"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+          {% elif i > page_obj.number|add:'-5' and i < page_obj.number|add:'5' %}
+              <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+          {% endif %}
+      {% endfor %}
+      {% if page_obj.paginator.num_pages > page_obj.number|add:'4' %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.number|add:'5' }}">&hellip;</a></li>
+      {% endif %}
+      {% if page_obj.has_next %}
+          <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}"><i class="fa fa-chevron-left" aria-hidden="true"></i></a></li>
+      {% else %}
+          <li class="page-item disabled"><span class="page-link"><i class="fa fa-chevron-left" aria-hidden="true"></i></span></li>
+      {% endif %}
+      </ul>
+      {% endif %}
+</div>
+{% else %}
+<div class="h4 alert alert-success" role="alert">
+  النظام ليس لديه أي نقلات مسجلة! </br>
+يمكنك دائمًا إنشاء نقل جديد بواسطة الزر أعلاه أو باستخدام رسالة نصية بالتنسيق التالي: </br>
+رقم المستفيد * المبلغ * الرسم * رقم وكيل المتلقي
+</div>
+{% endif %}
+
+{% endblock %}
