@@ -1,1 +1,1 @@
-E:/usr/lib/python3.6/io.py
+/usr/lib/python3.6/io.py
