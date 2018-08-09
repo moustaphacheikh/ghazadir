@@ -199,9 +199,7 @@ def new_transtaction(request):
             #Create a new transaction with default status to delivered
     else:
         data = {'from_agent_number': request.user.phone_number}
-
         form = TransactionForm(initial=data)
-
     return render(request, 'main/new_transtaction.html', {'form': form})
 ####################### END ###########################
 
