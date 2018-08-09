@@ -12,8 +12,7 @@
 
 <br>
 
-
-{% if transactions %}
+{% if transaction_list %}
 <div class="row">
     <table class="table color-bordered-table info-bordered-table" cellspacing="0" width="100%">
         <thead class="table-success">
@@ -21,13 +20,13 @@
               <th scope="col">الوكيل المورسل</th>
               <th scope="col">الوكيل المستلم</th>
               <th scope="col">المبلغ</th>
-            <th scope="col">الرسم</th>
+            <th scope="col">رسوم</th>
             <th scope="col">المستفيد</th>
           </tr>
         </thead>
 
         <tbody class="">
-          {% for trans in transactions %}
+          {% for trans in transaction_list %}
           <tr>
         <th>{{ trans.from_agent }}</th>
         <th>{{ trans.to_agent }}</th>

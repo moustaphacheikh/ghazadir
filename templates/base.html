@@ -53,16 +53,15 @@
   						<a class="nav-link font-weight-bold" href="{% url 'user-list' %}">الوكلاء</a>
 
   					</li>
-  					{% if request.user.is_admin%}
             <li class="nav-item h5">
-              <a class="nav-link font-weight-bold" href="{% url 'transtaction-list' %}">التحويلات</a>
+              <a class="nav-link font-weight-bold" href="{% url 'transtaction-list' %}">التحويلات الخاصة بي</a>
             </li>
-            {% endif %}
+{% if request.user.is_admin %}
 
             <li class="nav-item h5">
-              <a class="nav-link font-weight-bold" href="{% url 'transtactions' %}">التحويلات</a>
+              <a class="nav-link font-weight-bold" href="{% url 'transtactions' %}">جميع التحويلات</a>
             </li>
-
+ {% endif %}
 
   					{% endif %}
   				</ul>

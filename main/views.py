@@ -15,10 +15,13 @@ import json
 # Create your views here.
 import string
 from random import *
-
+from django.db.models import Avg, Max, Min, Sum,Count
+from django.db.models.functions import TruncMonth
+from django.db.models import Sum
+from datetime import datetime, timedelta
 ##################### TESTED #########################
 
-class HomePageView(TemplateView):
+class HomePageView(LoginRequiredMixin,TemplateView):
     template_name = 'home.html'
 
 class UserDetailView(LoginRequiredMixin,DetailView):
@@ -50,16 +53,28 @@ class DashboardView(LoginRequiredMixin,ListView):
     context_object_name = 'users'  # Default: object_list
 
     def get_queryset(self):
-
         return User.objects.filter(is_admin=False)
 
     def get_context_data(self, **kwargs):
         context = super(DashboardView, self).get_context_data(**kwargs)
-        yesterday = date.today() - timedelta(1)
-        # Create any data and add it to the context
-        context['count'] = Transaction.objects.count()
-        context['yesterday']  =yesterday
-        context['some_data'] = 'This is just some data'
+
+        from django.utils import timezone
+        last_month = timezone.now() - timedelta(days=30)
+        last_week = timezone.now() - timedelta(days=7)
+        today = timezone.now() - timedelta(days=1)
+
+        last_month = Transaction.objects.filter(created_at__gte=last_month,).count()
+        last_week = Transaction.objects.filter(created_at__gte=last_week,).count()
+        today = Transaction.objects.filter(created_at__gte=today,).count()
+
+        total = Transaction.objects.all().count()
+        #total = Transaction.objects.all().distinct('beneficiary_number').count()
+        # from django.db.models import Count
+        # total = Transaction.objects.all().annotate(the_count=Count('beneficiary_number'))
+        context['last_month'] = last_month
+        context['last_week']  = last_week
+        context['today'] = today
+        context['total'] = total
         return context
 
 
@@ -73,7 +88,10 @@ class TransactionListView(LoginRequiredMixin,ListView):
 
     def get_queryset(self):
         yesterday = date.today() - timedelta(1)
-        return Transaction.objects.all()
+        if self.request.user.is_admin:
+            return Transaction.objects.all()
+        else:
+            return Transaction.objects.filter(Q(to_agent=self.request.user) | Q(from_agent=self.request.user))
 
     def get_context_data(self, **kwargs):
         context = super(TransactionListView, self).get_context_data(**kwargs)
@@ -85,20 +103,19 @@ class TransactionListView(LoginRequiredMixin,ListView):
 class Transactions(LoginRequiredMixin,ListView):
     model = Transaction
     template_name = 'main/transactions.html'
-    context_object_name = 'transactions'  # Default: object_list
+    context_object_name = 'transaction_list'  # Default: object_list
     paginate_by = 10
 
 
     def get_queryset(self):
-        yesterday = date.today() - timedelta(1)
-        return []
+
+        return Transaction.objects.all()
 
     def get_context_data(self, **kwargs):
         context = super(Transactions, self).get_context_data(**kwargs)
         # Create any data and add it to the context
         # context['range'] = range(context['paginator'].num_pages)
-        transactions = Transaction.objects.filter(Q(to_agent=self.request.user) | Q(from_agent=self.request.user))
-        context['transactions'] = transactions
+
         return context
 
 class UserUpdateView(LoginRequiredMixin,UpdateView):
@@ -110,11 +127,18 @@ class UserUpdateView(LoginRequiredMixin,UpdateView):
     template_name_suffix = '_update_form'
 
 
-class SignUp(generic.CreateView):
+class SignUp(LoginRequiredMixin,generic.CreateView):
     form_class = UserSignUpForm
     success_url = reverse_lazy('user-list')
     template_name = 'signup.html'
 
+    def form_valid(self, form):
+        self.object = form.save(commit=False)
+        # things
+        self.object.phone_number = self.object.username
+        self.object.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 class UserListView(LoginRequiredMixin,ListView):
     model = User
     template_name_suffix = '_list'
@@ -136,7 +160,7 @@ def html_404(request):
 @csrf_exempt
 def sms_response(request):
     # Start our TwiML response
-    TEST = True
+    TEST = False
     resp = MessagingResponse()
     if request.method!='POST':
         return HttpResponse(str(resp))
@@ -158,7 +182,7 @@ def sms_response(request):
 
 @login_required
 def new_transtaction(request):
-    TEST =True
+    TEST =False
     # Retrieve post by id
     if request.method == 'POST':
     # Form was submitted
@@ -234,34 +258,32 @@ class DataGenerator:
     def gen_sid(self):
         allchar = string.ascii_letters + string.punctuation + string.digits
         return "".join(random.choice(allchar) for x in range(random.randint(34, 34)))
-
+from django.db.models import Q
+@login_required
 def client_search(request):
     num = request.GET.get("phone_number")
     if num is None or num == "":
         return render(request, 'main/client_detail.html', {'transactions': None})
     else:
-        transactions = Transaction.objects.filter(beneficiary_number=num)
-        if transactions:
-            return render(request, 'main/client_detail.html', {'transactions': transactions})
+        if request.user.is_admin:
+            transactions = Transaction.objects.filter(Q(beneficiary_number=num))
         else:
-            return render(request, 'main/client_detail.html', {'transactions': None})
-from django.db.models import Q
+            transactions = Transaction.objects.filter(Q(beneficiary_number=num) & (Q(from_agent=request.user) | Q(to_agent=request.user) ))
 
+    return render(request, 'main/client_detail.html', {'transactions': transactions})
+
+@login_required
 def agent_search(request):
     num = request.GET.get("phone_number")
 
-
     if num is None or num == "":
-        return render(request, 'main/agent_detail.html', {'transactions': None})
+        return render(request, 'main/agent_detail.html', {'requested_user': None})
     else:
-        if request.user.is_admin:
-            transactions = Transaction.objects.filter(Q(from_agent__phone_number=num) | Q(to_agent__phone_number=num))
+        requested_user = User.objects.filter(phone_number=num).first()
+        if requested_user:
+            return render(request, 'main/agent_detail.html', {'requested_user': requested_user})
         else:
-            transactions = Transaction.objects.filter(Q(from_agent__phone_number=num) | Q(to_agent__phone_number=num) & Q(to_agent__phone_number=request.user.phone_number) & Q(from_agent__phone_number=request.user.phone_number))
-        if transactions:
-            return render(request, 'main/agent_detail.html', {'transactions': transactions})
-        else:
-            return render(request, 'main/agent_detail.html', {'transactions': None})
+            return render(request, 'main/agent_detail.html', {'requested_user': None})
 
 from main import enums
 def gen_user(gen,n):
@@ -291,7 +313,7 @@ def gen_user(gen,n):
 
 def gen_users(n):
     gen = DataGenerator()
-    User.objects.filter(is_superuser=False).delete()
+    #User.objects.filter(is_superuser=False).delete()
     user_dicts = gen_user(gen,n)
     for user_dict in user_dicts:
         user = User.objects.create_user(username=user_dict['username'],
@@ -317,7 +339,7 @@ def gen_transactions(n):
         body = f'{cl_num}*{money}*{fee}*{random.choice(numbers)}'
         body_ = body.split('*')
         to_ag_num = body_[3]
-        created_at = randomDate("01-01-2015 00:00", "03-08-2018 00:50")
+        created_at = randomDate("09-08-2019 00:00", "09-08-2018 00:50")
         from_ag =  User.objects.filter(phone_number=from_ag_num).first()
         to_ag =  User.objects.filter(phone_number=to_ag_num).first()
         cl_msg = f'يمكنكم من الأن سحب مبلغ {money} عن طريل مكتب غزة {to_ag_num}'
@@ -331,7 +353,7 @@ def gen_transactions(n):
         'to_ag_msg':to_ag_msg,'to':'+18135364577'}
         #cv_in(req_clean)
         in_msg = cv_in(req_clean)
-        date = created_at  =randomDate("01-01-2016 00:00", "03-08-2018 00:50")
+
 
         to_cl_out = OutboundMessage.objects.create(sid=gen.gen_sid(),
                                         sender=req_clean['to'],
@@ -339,7 +361,7 @@ def gen_transactions(n):
                                         body=req_clean['body'],
                                         price=req_clean['price'],
                                         status='delivered',
-                                        created_at  =date,
+                                        created_at  =created_at,
                                         is_outbound=True)
         to_ag_out = OutboundMessage.objects.create(sid=gen.gen_sid(),
                                         sender=req_clean['to'],
@@ -347,17 +369,17 @@ def gen_transactions(n):
                                         body=req_clean['body'],
                                         price=req_clean['price'],
                                         status='delivered',
-                                        created_at  =date,
+                                        created_at  =created_at,
                                         is_outbound=True)
 
         trans = cs_trans(req_clean,in_msg,to_cl_out,to_ag_out)
-        trans.created_at = created_at  =date
+        trans.created_at = created_at
         trans.save()
 
 @login_required
 def generate_new_dataset(request):
-    # gen_users(200)
-    # gen_transactions(1000)
+    #gen_users(10)
+    #gen_transactions(100)
     # return HttpResponseRedirect(reverse_lazy('transtaction-list'))
     return render(request, 'home.html', {'data': 'data'})
 

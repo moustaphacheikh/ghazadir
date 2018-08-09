@@ -30,7 +30,8 @@
           <tbody>
             {% for user in user_list %}
             <tr>
-              <th><a href="{{ user.get_absolute_url }}">{{ user.first_name }}</a></th>
+              <!-- <th><a href="{{ user.get_absolute_url }}">{{ user.first_name }}</a></th> -->
+              <th>{{ user.first_name }}</th>
               <td>{{ user.last_name }}</td>
               <td>{{ user.phone_number }}</td>
               <td>{{ user.location }}</td>
@@ -38,7 +39,7 @@
             </tr>
             {% endfor %}
           </tbody>
-          
+
         </table>
         {% if is_paginated %}
         <ul class="pagination">
@@ -70,9 +71,7 @@
   </div>
   {% else %}
   <div class="h4 alert alert-success" role="alert">
-    النظام ليس لديه أي نقلات مسجلة! </br>
-  يمكنك دائمًا إنشاء نقل جديد بواسطة الزر أعلاه أو باستخدام رسالة نصية بالتنسيق التالي: </br>
-  رقم المستفيد * المبلغ * الرسم * رقم وكيل المتلقي
+     النظام ليس لديه أي وكلاء حتى الآن
   </div>
   {% endif %}
 

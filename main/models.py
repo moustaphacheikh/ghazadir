@@ -29,6 +29,7 @@ class User(AbstractUser):
     updated_at = models.DateTimeField(auto_now=True)
     is_admin = models.BooleanField(verbose_name ='صلاحية المدير',default=False)
     location = models.CharField(verbose_name  ='العنوان',max_length = 50)
+    username = models.CharField(verbose_name  ='رقم الهاتف',unique=True,max_length=8)
     phone_regex = RegexValidator(regex=r'^\d{8}$', message="يجب أن تحتوي أرقام الهاتف على 8 أرقام.")
     phone_number = models.CharField(verbose_name  ='الهاتف',validators=[phone_regex], max_length=8,unique=True)
     city = models.CharField(verbose_name  ='المدينة',max_length=25, choices=enums.CITY_CHOICES)
@@ -37,7 +38,11 @@ class User(AbstractUser):
         return reverse('user-detail', kwargs={'pk': self.id})
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} : {self.phone_number}'
+        return f'{self.first_name} {self.last_name} ({self.phone_number})'
+
+    @property
+    def name(self):
+         return f'{self.first_name} {self.last_name} ({self.phone_number})'
 
     class Meta:
         ordering = ['created_at']
@@ -62,10 +67,12 @@ class Transaction(models.Model):
     def __str__(self):
          return f'from {self.from_agent} to {self.to_agent} for : {self.beneficiary_number}'
 
+
     class Meta:
         ordering = ['created_at']
         verbose_name = "تحويلة"
         verbose_name_plural = "التحويلات"
+
 class Message(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -140,8 +147,8 @@ def form_processing(form,user):
     from_ag =  User.objects.filter(phone_number=from_ag_num).first()
     to_ag =  User.objects.filter(phone_number=to_ag_num).first()
 
-    cl_msg = f'يمكنكم من الأن سحب مبلغ {money} عن طريل مكتب غزة {to_ag_num}'
-    to_ag_msg =f'صاحب الرقم {cl_num} يملك {money} مودعة عن طريق {from_ag_num}'
+    cl_msg = f'يمكنكم من الأن سحب مبلغ {money} عن طريل مكتب غزة {to_ag}'
+    to_ag_msg =f'صاحب الرقم {cl_num} يملك {money} مودعة عن طريق {from_ag}'
 
 
     form_clean = {'from_ag_num':from_ag_num,'to_ag_num':to_ag_num,'money':money,'fee':fee,

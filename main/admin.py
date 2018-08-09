@@ -16,7 +16,7 @@ from main.models import Transaction
 class TransactionResource(resources.ModelResource):
     class Meta:
         model = Transaction
-        fields = ('id', 'from_agent__first_name', 'to_agent__first_name', 'fee','beneficiary_number')
+        fields = ('from_agent__phone_number', 'to_agent__phone_number','money', 'fee','beneficiary_number','created_at')
     def get_export_headers(self):
         headers = []
         for field in self.get_fields():
@@ -24,11 +24,12 @@ class TransactionResource(resources.ModelResource):
             header = next((x.verbose_name for x in model_fields if x.name == field.column_name), field.column_name)
             headers.append(header)
             for i in range(len(headers)):
-                if headers[i]=="from_agent__first_name":
+                if headers[i]=="from_agent__phone_number":
                     headers[i]="الوكيل المرسل"
             for i in range(len(headers)):
-                if headers[i]=="to_agent__first_name":
+                if headers[i]=="to_agent__phone_number":
                     headers[i]= "الوكيل المستلم"
+
         return headers
         # export_order = ('id', 'price', 'author', 'name')
 from import_export.admin import ExportMixin,ExportActionModelAdmin
@@ -36,9 +37,14 @@ from import_export.formats import base_formats
 
 class TransactionAdmin(ExportActionModelAdmin):
     resource_class = TransactionResource
-    list_filter = ['created_at']
     date_hierarchy = 'created_at'
     verbose_name = True
+    list_display = (
+        'from_agent',
+        'money',
+        'fee',
+        'beneficiary_number',
+   )
 
     def get_export_formats(self):
 
@@ -57,3 +63,4 @@ from django.contrib.auth.models import Group
 
 admin.site.unregister(Group)
 admin.site.register(Transaction,TransactionAdmin)
+admin.site.register(get_user_model())
