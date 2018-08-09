@@ -38,7 +38,7 @@ class User(AbstractUser):
         return reverse('user-detail', kwargs={'pk': self.id})
 
     def __str__(self):
-        return f'{self.first_name} {self.last_name} ({self.phone_number})'
+        return f'{self.first_name} {self.last_name} ({self.location})'
 
     @property
     def name(self):
