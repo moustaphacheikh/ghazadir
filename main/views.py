@@ -195,11 +195,14 @@ def new_transtaction(request):
                 to_cl_out = scv_cl_out(form_clean)
                 to_ag_out = scv_ag_out(form_clean)
                 trans = cs_trans_form(form_clean,to_cl_out,to_ag_out)
-            return HttpResponseRedirect(reverse_lazy('transtaction-list'))
+                return HttpResponseRedirect(reverse_lazy('transtaction-list'))
             #Create a new transaction with default status to delivered
     else:
-        form = TransactionForm(initial={'from_agent_number':request.user.phone_number})
-        return render(request, 'main/new_transtaction.html', {'form': form})
+        data = {'from_agent_number': request.user.phone_number}
+
+        form = TransactionForm(initial=data)
+
+    return render(request, 'main/new_transtaction.html', {'form': form})
 ####################### END ###########################
 
 

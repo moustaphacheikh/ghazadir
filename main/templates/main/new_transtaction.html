@@ -11,7 +11,7 @@
           <div class="card">
             <div class="card-body">
               <h3 class="card-title text-center">إضافة نقل جديد</h3>
-              <form class="form-required" action="." method="post">
+              <form class="form-required" action="." method="POST">
                   {% csrf_token %}
                     {{ form | crispy }}
                     <p> <button type="submit" class="btn btn-info btn-block">إرسال</button>

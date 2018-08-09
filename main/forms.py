@@ -31,7 +31,7 @@ class TransactionForm(forms.Form):
     to_agent_number = forms.CharField(validators=[phone_regex], max_length=8,required=True,label='رقم الوكيل المستلم')
     money = forms.CharField(max_length=255,required=True,label='المبلغ')
     fee = forms.CharField(max_length=255,required=True,label='الرسوم')
-    beneficiary_number = forms.CharField(validators=[phone_regex],max_length=8,required=True,label='رقم العميل المستلم')
+    beneficiary_number = forms.CharField(validators=[phone_regex],max_length=8,required=True,label='رقم الزبون المستلم')
 
     def clean(self):
         # form level cleaning
@@ -39,13 +39,13 @@ class TransactionForm(forms.Form):
 
         from_agent_phone = cleaned_data.get("from_agent_number")
         to_agent_phone = cleaned_data.get("to_agent_number")
-
+        print("TODO: _ag : ",to_agent_phone)
         from_agent =  User.objects.filter(phone_number=from_agent_phone).first()
         to_agent =  User.objects.filter(phone_number=to_agent_phone).first()
 
-        if not from_agent and not to_agent:
-            raise forms.ValidationError("عذرًا ، يجب أن يكون كل من الوكيل المرسل والوكيل المتلقي موجودًا ضمن الوكلاء المسجلين.")
-        if not from_agent:
-            raise forms.ValidationError("عذرًا ، يجب أن يكون رقم الوكيل المرسل موجودًا ضمن الوكلاء المسجلين.",)
+        # if not from_agent and not to_agent:
+        #     raise forms.ValidationError("عذرًا ، يجب أن يكون كل من الوكيل المرسل والوكيل المتلقي موجودًا ضمن الوكلاء المسجلين.")
+        # if not from_agent:
+        #     raise forms.ValidationError("عذرًا ، يجب أن يكون رقم الوكيل المرسل موجودًا ضمن الوكلاء المسجلين.",)
         if not to_agent:
             raise forms.ValidationError("عذرًا ، يجب أن يكون رقم الوكيل المستلم ضمن الوكلاء المسجلين.",)
