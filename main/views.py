@@ -35,7 +35,6 @@ class UserListView(LoginRequiredMixin,ListView):
     context_object_name = 'user_list'  # Default: object_list
     paginate_by = 5
 
-
     def get_queryset(self):
         return User.objects.all()
 
@@ -195,7 +194,7 @@ def new_transtaction(request):
                 to_cl_out = scv_cl_out(form_clean)
                 to_ag_out = scv_ag_out(form_clean)
                 trans = cs_trans_form(form_clean,to_cl_out,to_ag_out)
-                return HttpResponseRedirect(reverse_lazy('transtaction-list'))
+            return HttpResponseRedirect(reverse_lazy('transtaction-list'))
             #Create a new transaction with default status to delivered
     else:
         data = {'from_agent_number': request.user.phone_number}
