@@ -209,9 +209,12 @@ def req_is_valid(request):
     else:
         return True
 
-def sent(num,body):
+def sent(num,body,is_client):
     client = Client(settings.ACCOUNT_SID, settings.AUTH_TOKEN)
-    msg = client.api.account.messages.create(to = num,from_= settings.TWILIO_NUM,body= body)
+    if(is_client):
+        msg = client.api.account.messages.create(to = num,from_='GazaTelecom',body= body)
+    else:
+        msg = client.api.account.messages.create(to = num,from_= settings.TWILIO_NUM,body= body)
     return msg
 
 def in_req_clean(request):
@@ -250,14 +253,14 @@ def cv_in(in_req):
 def scv_cl_out(in_req):
     cl_num = in_req['cl_num']
     cl_num = f'{C_CODE}{cl_num}'
-    msg = sent(cl_num,in_req['cl_msg'])
+    msg = sent(cl_num,in_req['cl_msg'],True)
     cl_out = cv_out(msg)
     return cl_out
 
 def scv_ag_out(in_req):
     to_ag_num = in_req['to_ag_num']
     to_ag_num = f'{C_CODE}{to_ag_num}'
-    msg = sent(to_ag_num,in_req['to_ag_msg'])
+    msg = sent(to_ag_num,in_req['to_ag_msg'],False)
     cl_out = cv_out(msg)
     return cl_out
 
