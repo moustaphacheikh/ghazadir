@@ -9,6 +9,8 @@ from django.contrib.auth import get_user_model
 from main import enums
 from twilio.rest import Client
 # Create your models here.
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 import random
 import time
 from datetime import datetime
@@ -48,6 +50,13 @@ class User(AbstractUser):
         ordering = ['created_at']
         verbose_name = "مستخدم"
         verbose_name_plural = "المستخدمين"
+
+def create_phone(sender, **kwargs):
+    user=kwargs['instance']
+    user.phone_number=user.username
+    user.save()
+
+post_save.connect(create_phone, sender=User)
 
 class Transaction(models.Model):
     created_at = models.DateTimeField(verbose_name = 'تاريخ الأنشاء',auto_now_add=True)
