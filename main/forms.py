@@ -8,20 +8,22 @@ class UserSignUpForm(UserCreationForm):
     phone_regex = RegexValidator(regex=r'^\d{8}$', message="يجب أن تحتوي أرقام الهاتف على 8 أرقام.")
     username = forms.CharField(validators=[phone_regex], max_length=8,help_text=False,label="رقم الهاتف")
     phone_number = forms.CharField(widget=forms.HiddenInput,validators=[phone_regex],required=False, max_length=8,label='رقم الهاتف')
-    location = forms.CharField(max_length=255,required=True,label='عنوانك')
+    location = forms.CharField(max_length=255,required=True,label='عنوان العمل')
+    first_name = forms.CharField(max_length=255,required=True,label='الاسم الاول')
+    last_name = forms.CharField(max_length=255,required=True,label='اسم العائلة')
     city = forms.ChoiceField(choices = CITY_CHOICES,widget=forms.Select(), required=True)
     class Meta(UserCreationForm.Meta):
         model = User
-        fields = ['username','first_name', 'last_name','email','city',
-                    'location','is_admin']
+        fields = ['username','first_name', 'last_name','city',
+                    'location']
 
 
 class UserUpdateForm(UserChangeForm):
     class Meta:
         model = User
-        fields = ('username','first_name', 'last_name','email','city',
+        fields = ('username','first_name', 'last_name','city',
                     'location')
-        exclude = ['is_admin']
+         
 
 
 

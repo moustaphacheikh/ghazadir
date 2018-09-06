@@ -14,10 +14,11 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 import json
 # Create your views here.
 import string
+from datetime import date, timedelta
 from random import *
 from django.db.models import Avg, Max, Min, Sum,Count
 from django.db.models.functions import TruncMonth
-from django.db.models import Sum
+
 from datetime import datetime, timedelta
 ##################### TESTED #########################
 
@@ -43,7 +44,7 @@ class UserListView(LoginRequiredMixin,ListView):
         # Create any data and add it to the context
         # context['some_data'] = 'This is just some data'
         return context
-from datetime import date, timedelta
+
 
 class DashboardView(LoginRequiredMixin,ListView):
     model = User
@@ -107,7 +108,6 @@ class Transactions(LoginRequiredMixin,ListView):
 
 
     def get_queryset(self):
-
         return Transaction.objects.all()
 
     def get_context_data(self, **kwargs):
@@ -120,8 +120,7 @@ class Transactions(LoginRequiredMixin,ListView):
 class UserUpdateView(LoginRequiredMixin,UpdateView):
     model = User
     # fields = ['username','first_name','last_name','email']
-    fields = ['phone_number','first_name', 'last_name','username','email','city',
-                'location','is_admin']
+    fields = ['username','first_name','last_name','city','location']
     success_url = reverse_lazy('home')
     template_name_suffix = '_update_form'
 
@@ -378,8 +377,8 @@ def gen_transactions(n):
 
 @login_required
 def generate_new_dataset(request):
-    #gen_users(10)
-    #gen_transactions(100)
+    gen_users(20)
+    gen_transactions(100)
     # return HttpResponseRedirect(reverse_lazy('transtaction-list'))
     return render(request, 'home.html', {'data': 'data'})
 

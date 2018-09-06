@@ -1,4 +1,6 @@
-{% extends 'base.html' %} {% block title %}Home{% endblock %} {% block content %}
+{% extends 'base.html' %} {% block title %}Home{% endblock %}
+
+{% block content %}
 {% if request.user.is_superuser %}
 <div class="row">
   <div class="col">
@@ -12,6 +14,7 @@
 {% if request.user.is_authenticated %}
 
 <div class="row">
+
   <div class="col-md-6">
     <div class="card border-dark">
       <div class="card-header bg-success text-white">
@@ -30,29 +33,26 @@
   </div>
 {% endif %}
 
-  {% if request.user.is_admin %}
+{% if request.user.is_admin %}
 
-  <div class="col-md-6">
-    <div class="card border-primary">
-      <div class="card-header text-white bg-info">
-        <h5 class="m-b-0"></h5 class="text-white">ابحث عن وكيل معين</div>
-      <div class="card-body">
-        <p class="card-text">هل تحتاج إلى المعاملات المتعلقة بوكيل معين؟ ضع رقمه وانقر فوق بحث</p>
-        <form class="form text-center" action="{% url 'agent_search' %}" method="GET">
-          <div class="form-group">
-            <input class="form-control" type="text" name="phone_number" placeholder="هاتف الوكيل" autofocus/>
-          </div>
-          <input class="btn btn-info" type="submit" value="بحث" />
-        </form>
+<div class="col-md-6">
+  <div class="card border-primary">
+    <div class="card-header text-white bg-info">
+      <h5 class="m-b-0"></h5 class="text-white">ابحث عن وكيل معين
       </div>
+    <div class="card-body">
+      <p class="card-text">هل تحتاج إلى المعاملات المتعلقة بوكيل معين؟ ضع رقمه وانقر فوق بحث</p>
+      <form class="form text-center" action="{% url 'agent_search' %}" method="GET">
+        <div class="form-group">
+          <input class="form-control" type="text" name="phone_number" placeholder="هاتف الوكيل" autofocus/>
+        </div>
+        <input class="btn btn-info" type="submit" value="بحث" />
+      </form>
     </div>
   </div>
-  {% endif %}
-
-
 </div>
-
-
+{% endif %}
+</div>
 
 
 
