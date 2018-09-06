@@ -196,7 +196,7 @@ def new_transtaction(request):
             return HttpResponseRedirect(reverse_lazy('transtaction-list'))
             #Create a new transaction with default status to delivered
     else:
-        data = {'from_agent_number': request.user.phone_number}
+        data = {'from_agent_number': request.user.username}
         form = TransactionForm(initial=data)
     return render(request, 'main/new_transtaction.html', {'form': form})
 ####################### END ###########################
@@ -278,7 +278,7 @@ def agent_search(request):
     if num is None or num == "":
         return render(request, 'main/agent_detail.html', {'requested_user': None})
     else:
-        requested_user = User.objects.filter(phone_number=num).first()
+        requested_user = User.objects.filter(username=num).first()
         if requested_user:
             return render(request, 'main/agent_detail.html', {'requested_user': requested_user})
         else:
@@ -328,7 +328,7 @@ def gen_users(n):
 def gen_transactions(n):
     gen = DataGenerator()
     users = User.objects.filter(is_superuser=False)
-    numbers = [user.phone_number for user in users]
+    numbers = [user.username for user in users]
     for i in range(n):
         in_sid = gen.gen_sid()
         cl_num = gen.random_with_N_digits(8)
@@ -339,8 +339,8 @@ def gen_transactions(n):
         body_ = body.split('*')
         to_ag_num = body_[3]
         created_at = randomDate("09-08-2019 00:00", "09-08-2018 00:50")
-        from_ag =  User.objects.filter(phone_number=from_ag_num).first()
-        to_ag =  User.objects.filter(phone_number=to_ag_num).first()
+        from_ag =  User.objects.filter(username=from_ag_num).first()
+        to_ag =  User.objects.filter(username=to_ag_num).first()
         cl_msg = f'يمكنكم من الأن سحب مبلغ {money} عن طريل مكتب غزة {to_ag_num}'
         to_ag_msg =f'صاحب الرقم {cl_num} يملك {money} مودعة عن طريق {from_ag_num}'
 

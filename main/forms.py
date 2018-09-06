@@ -23,17 +23,18 @@ class UserUpdateForm(UserChangeForm):
         model = User
         fields = ('username','first_name', 'last_name','city',
                     'location')
-         
+
 
 
 
 class TransactionForm(forms.Form):
     phone_regex = RegexValidator(regex=r'^\d{8}$', message="يجب أن تحتوي أرقام الهاتف على 8 أرقام.")
-    from_agent_number = forms.CharField(widget=forms.HiddenInput,validators=[phone_regex], max_length=8,label='رقم الوكيل الموسل')
-    to_agent_number = forms.CharField(validators=[phone_regex], max_length=8,required=True,label='رقم الوكيل المستلم')
+    beneficiary_number = forms.CharField(validators=[phone_regex],max_length=8,required=True,label='رقم الزبون المستلم')
     money = forms.CharField(max_length=255,required=True,label='المبلغ')
     fee = forms.CharField(max_length=255,required=True,label='الرسوم')
-    beneficiary_number = forms.CharField(validators=[phone_regex],max_length=8,required=True,label='رقم الزبون المستلم')
+    to_agent_number = forms.CharField(validators=[phone_regex], max_length=8,required=True,label='رقم الوكيل المستلم')
+    from_agent_number = forms.CharField(widget=forms.HiddenInput,validators=[phone_regex], max_length=8,label='رقم الوكيل الموسل')
+
 
     def clean(self):
         # form level cleaning
@@ -42,8 +43,8 @@ class TransactionForm(forms.Form):
         from_agent_phone = cleaned_data.get("from_agent_number")
         to_agent_phone = cleaned_data.get("to_agent_number")
         print("TODO: _ag : ",to_agent_phone)
-        from_agent =  User.objects.filter(phone_number=from_agent_phone).first()
-        to_agent =  User.objects.filter(phone_number=to_agent_phone).first()
+        from_agent =  User.objects.filter(username=from_agent_phone).first()
+        to_agent =  User.objects.filter(username=to_agent_phone).first()
 
         # if not from_agent and not to_agent:
         #     raise forms.ValidationError("عذرًا ، يجب أن يكون كل من الوكيل المرسل والوكيل المتلقي موجودًا ضمن الوكلاء المسجلين.")

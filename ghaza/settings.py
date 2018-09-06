@@ -22,7 +22,7 @@ SECRET_KEY = '@py+ageirh^+%fed(@n5n@h2m$ewf)a%xf5w!63-^ck1q*2dc+'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['142.93.100.47','ghaza.ovh','www.ghaza.ovh','localhost','127.0.0.1']
+ALLOWED_HOSTS = ['207.154.215.17','ghaza.ovh','www.ghaza.ovh','localhost','127.0.0.1']
 
 
 # Application definition
@@ -128,9 +128,13 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
+# Extra places for collectstatic to find static files.
+STATICFILES_DIRS = (
+    os.path.join(BASE_DIR, 'static'),
+)
 LOGIN_REDIRECT_URL = 'home'
 LOGOUT_REDIRECT_URL = 'home'
 
@@ -146,7 +150,7 @@ TWILIO_ACCOUNT_SID = 'AC6e471ecf20e830191d8e1d38099c3dce'
 TWILIO_AUTH_TOKEN = '61f9950df8570074017feb4288087e60'
 
 
-TUNISIA = True
+TUNISIA = False
 
 if TUNISIA:
     C_CODE ="+216"

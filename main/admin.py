@@ -16,7 +16,7 @@ from main.models import Transaction
 class TransactionResource(resources.ModelResource):
     class Meta:
         model = Transaction
-        fields = ('from_agent__phone_number', 'to_agent__phone_number','money', 'fee','beneficiary_number','created_at')
+        fields = ('from_agent__username', 'to_agent__username','money', 'fee','beneficiary_number','created_at')
     def get_export_headers(self):
         headers = []
         for field in self.get_fields():
@@ -24,10 +24,10 @@ class TransactionResource(resources.ModelResource):
             header = next((x.verbose_name for x in model_fields if x.name == field.column_name), field.column_name)
             headers.append(header)
             for i in range(len(headers)):
-                if headers[i]=="from_agent__phone_number":
+                if headers[i]=="from_agent__username":
                     headers[i]="الوكيل المرسل"
             for i in range(len(headers)):
-                if headers[i]=="to_agent__phone_number":
+                if headers[i]=="to_agent__username":
                     headers[i]= "الوكيل المستلم"
 
         return headers

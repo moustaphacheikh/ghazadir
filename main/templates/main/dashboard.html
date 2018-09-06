@@ -1,54 +1,123 @@
- {% extends 'base.html' %} {% block title %}{% endblock %} {% block content %}
+ {% extends 'base.html' %}
+{% load static %}
+ {% block title %}
+ {% endblock %}
+  {% block content %}
+ <div class="container h3">
+   <div class="row justify-content-center">
+       <div class="col-sm-12 col-md-11 col-lg-11">
+         <div class="card">
+           <div class="card-body">
 
-<div class="row">
-  <div class="col-12">
-    <div class="card">
-      <div class="card-body">
-        <h4 class="card-title">إحصائيات حول الزبناء</h4>
-        <h6 class="card-subtitle"></h6>
-        <div class="row m-t-40">
-          <!-- Column -->
-          <div class="col-md-6 col-lg-3 col-xlg-3">
-            <div class="card">
-              <div class="box bg-info text-center">
-                <h1 class="font-light text-white">{{total}}</h1>
-                <h6 class="text-white">اجمالي عدد الزبناء</h6>
-              </div>
-            </div>
-          </div>
-          <!-- Column -->
-          <div class="col-md-6 col-lg-3 col-xlg-3">
-            <div class="card">
-              <div class="box bg-primary text-center">
-                <h1 class="font-light text-white">{{last_month}}</h1>
-                <h6 class="text-white">العدد الإجمالي للزبناء هذا الشهر</h6>
-              </div>
-            </div>
-          </div>
-          <!-- Column -->
-          <div class="col-md-6 col-lg-3 col-xlg-3">
-            <div class="card">
-              <div class="box bg-success text-center">
-                <h1 class="font-light text-white">{{last_week}}</h1>
-                <h6 class="text-white">العدد الإجمالي للزيناء هذا الأسبوع</h6>
-              </div>
-            </div>
-          </div>
-          <!-- Column -->
-          <div class="col-md-6 col-lg-3 col-xlg-3">
-            <div class="card">
-              <div class="box bg-dark text-center">
-                <h1 class="font-light text-white">{{today}}</h1>
-                <h6 class="text-white">العدد الإجمالي للزبناء اليوم</h6>
-              </div>
-            </div>
-          </div>
-          <!-- Column -->
-        </div>
-      </div>
-    </div>
-  </div>
+  <div class="alert alert-success">
+ <h1 class="text-success"><i class="fa fa-check-circle"></i>الوكلاء</h1>
+
+     المكون الأول في النظام هو الوكلاء. هم مسؤولون عن إرسال وتلقي المال.
+   لكي يتمكن الوكيل من استخدام النظام ، يجب على المشرف وضعه في قاعدة البيانات أولاً. لإرسال أو تلقي الأموال ، يعمل هذا النظام مع أو بدون الإنترنت.
+     في هذه المقدمة سوف نرى كيف نضيف الوكلاء إلى النظام
+
+ </div>
+
+ <div class="alert alert-info">
+<h1 class="text-info"><i class="fa fa-check-circle"></i>إضافة وكيل إلى النظام</h1>
+<br>
+<img src="{% static 'first.jpg' %}" class="img-responsive d-inline-block align-top" alt="">
+ <br>
+العنصر الأول هو الرقم الذي سيستخدمه الوكيل لإرسال الرسائل القصيرة إلى الخادم.
+
+ هذا مهم جدا إذا لم يتم تسجيل هذا الرقم فإن النظام سوف يتجاهل أي الرسائل القصيرة منه.
+بعد ذلك الاسم الأول واسم العائلة.
+
+ بعد ذلك لدينا مدينة و عنوان الوكيل. سيتم استخدام هذه المعلومات لمساعدة الزبون في العثور على الموقع الذي سيسحب منه أمواله. ويمكن أيضًا استخدامها لتصفية البيانات حسب المدن.
+
+ وأخيرًا كلمة المرور. سيتم استخدام كلمة المرور هذه للاتصال بالنظام
+
+  لدينا الآن وكيل يمكنه استخدام النظام. باستخدام نفس الخطوات يمكنك إضافة المزيد من الوكلاء.
+
+  تذكر أنه من الضروري أن يكون كل من الوكيل المرسل والوكيل المستقبل مسجلين ليتمكنو من استعمال النطام.
+  <br>
+  <img src="{% static 'new_agent.png' %}" class="img-responsive d-inline-block align-top" alt="">
+   <br>
+   <br>
+   <img src="{% static 'new_agent1.png' %}" class="img-responsive d-inline-block align-top" alt="">
+    <br>
 </div>
 
+<div class="alert alert-success">
+<h1 class="text-success"><i class="fa fa-check-circle"></i>التحويلات</h1>
+
+المكون الثاني في النظام هو التحويلات
+
+يساعدنا النظام على إرسال مبلغ من المال عن طريق الوكيل (المرسل) إلى الوكيل (المتلقي). هذه الأموال لزبون معين (لدينا رقم هاتفه).
+
+ سنرى كيف يمكن لأي وكيل الأرسال أو الإستقبال عن طريق النظام باستخدام الرسائل القصيرة فقط.
+
+ من الممكن أيضًا أن تفعل الشيء نفسه إذا كان الوكيل لديه إنترنت.
+
+</div>
+<div class="alert alert-info">
+<h1 class="text-info"><i class="fa fa-check-circle"></i>تحويل باستخدام الرسائل القصيرة</h1>
+للقيام  بعملية التحويل سوف تحتاج:
+<ul>
+  <li>  رقم هاتف الزبون (على سبيل المثال: 22303030) </li>
+  <li>  مبلغ المال (على سبيل المثال: 20000) </li>
+  <li>  الرسوم (على سبيل المثال: 500) </li>
+  <li>رقم هاتف الوكيل المستلم (على سبيل المثال: 33404040) </li>
+</ul>
+هذا كل ما تحتاجه للقيام بهذه العملية.
+سيقوم الوكيل الذي سيقوم بإجراء العملية من هاتفه بإرسال الرسالة القصيرة التالية إلى رقم الخادم
+<br>
+<img src="{% static 'msg.jpg' %}" class="img-responsive d-inline-block align-top" alt="">
+ <br>
+</div>
+
+<div class="alert alert-info">
+<h1 class="text-info"><i class="fa fa-check-circle"></i>تحويل باستخدام الإنترنت</h1>
+
+الخطوة الأولى سيقوم الوكيل بالاتصال بالنظام باستخدام رقم هاتفه وكلمة مروره.
+
+بعد ذلك انقر على تحويل ، مثلما في الصورة.
+
+الآن للقيام بتحويل باستخدام الإنترنت نحتاج إلى نفس المعلومات كما في استخدام الرسائل القصيرة.
+<br>
+<img src="{% static 'new_transfer.jpg' %}" class="img-responsive d-inline-block align-top" alt="">
+ <br>
+
+</div>
+<div class="alert alert-info">
+<h1 class="text-info"><i class="fa fa-check-circle"></i>كيفية تنزيل البيانات</h1>
+
+<br>
+<img src="{% static 'data.jpg' %}" class="img-responsive d-inline-block align-top" alt="">
+ <br>
+
+</div>
+<div class="alert alert-info">
+<h1 class="text-info"><i class="fa fa-check-circle"></i>التحويلات الخاصة بي</h1>
+
+يمكن لكل وكيل تسجيل الدخول إلى النظام ومشاهدة التحويلات.
+هذا يشمل المعاملة حيث كان المتلقي والمرسل. لكن المستخدم العادي لا يمكنه رؤية أكثر من ذلك.
+
+<br>
+<img src="{% static 'profile.jpg' %}" class="img-responsive d-inline-block align-top" alt="">
+ <br>
+
+</div>
+
+<div class="alert alert-info">
+<h1 class="text-info"><i class="fa fa-check-circle"></i>بحث</h1>
+
+يمكنك البحث عن أي نقل باستخدام رقم العميل
+<br>
+<img src="{% static 'search.jpg' %}" class="img-responsive d-inline-block align-top" alt="">
+ <br>
+
+</div>
+
+</div>
+</div>
+</div>
+</div>
+</div>
 
 {% endblock %}

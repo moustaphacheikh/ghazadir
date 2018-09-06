@@ -66,11 +66,10 @@
   					{% endif %}
   				</ul>
   			</div>
-        {% if request.user.is_admin %}
         <a class="navbar-brand h3" href="{% url 'dashboard' %}">
           <img src="{% static 'admin.png' %}" width="35" height="35" class="d-inline-block align-top" alt="">
         </a>
-       {% endif %}
+
   			<div class="mx-auto order-0">
 
   				<button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">

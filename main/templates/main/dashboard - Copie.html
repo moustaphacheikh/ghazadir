@@ -1,0 +1,91 @@
+ {% extends 'base.html' %} {% block title %}{% endblock %} {% block content %}
+
+<div class="row">
+  <div class="col-12">
+  <h1>Agents</h1>
+  the first component in the system is the aggents. they are respansible for sending and recieving the money.
+  for an agent to be able to use the system the administor has to put him in the database first.
+  thi system work withou or withou the internet.
+  in this introduction we will see how to are all the agents to the system
+  <h3>Adding an agent to the system</h3>
+  the first and element is the number that the agent will use to send sms to the server.
+  this is very important if that number is not registered the system will ignor any sms from it.
+  after that the first and last name.
+  after that we have the location and the address this is information will be used to help the client
+  find the location from wich he will pick his money.
+  and also can be used to filter the data.
+  and finaly the password and click save.
+  now we have an agent that can use the system. using the same steps you cand add more agents.
+  remeber that its obligatory that both the agent sender and the agent reciever have to be alredy registred
+  to be eble to use the system.
+
+  <h1>Transactions</h1>
+  the second component in the system is transactions. a transaction is the operation of sending and amount x
+  of money from agent a (sender) to agent b (reciver). and that money is for a client given his number.
+  after the system has the agents in the data we will  see how an agent can user the system using only sms.
+   it's also posible to do the same if the agent has internet.
+
+  <h2>New transaction with sms only</h2>
+  for do a transaction you need
+  1) the agent phone of the agent that is sending the money
+  0the number of the client
+  2)the amount of the mony
+  3) the fees
+  4) the number of the client
+
+  that all you need. now let's have an example.
+  Ahmed want to send 10000 to his friend Aziz.
+
+  so ahmed give the money and the fees to Mohamed (an agent). hi also give him aziz number so aziz can take his money.
+
+  aziz lives is kiffa so mohamed will send the money to Cheikh (and agent in kiffa city )
+
+  so we have this information for now :
+  Aziz number : 111111111
+  Cheikh number : 22222222
+  money : 10000
+  fees : 500
+
+  mohamed and cheikh are alredy registred in the system.
+  so mohamed have to use his phone to send the sms to Cheikh like the fallowing
+  1111111*10000*500*22222222
+
+  the client first after that his money and finaly the fees and the agent that will recieve the money
+
+  see the photo for the details.
+  <h3>Sending a transaction with internet</h3>
+  the first step the agent need to connect to the application using his number and his password
+
+  after that click on new transaction just like in the image.
+
+  now to do a transaction using the internet we need the same inforamtion as in using sms.
+
+  the client number and the number of the agent that will recive it. always rember that the agents need
+  to be registred first.
+
+  now  this fist input is for the client number and the money and the fees
+  after that agent that will recieve the money .
+  and finaly clikc send.
+  and th
+
+  <h1>Aditinatinal information</h1>
+  this is a prototype and not complete system but non the less every transaction that goes to the system
+  is saved and can be downloaded any time in excel file. you cand donwload it by year , month of evenr evry day
+
+  <h3>How to donload the data</h3>
+
+  <h3>Seerch</h3>
+you can search on any transaction using the client number and see what transaction has been made on his phone_number
+
+you can also (only the adminastractor) see the transaction that are made to or by and specific agent using the search
+
+
+  <h3>My transaction</h3>
+  every agent can log in to the system and see al his transaction. this include the transaction where
+  he was the recievr and the sender. but a regular user can't see more than that.
+
+  </div>
+</div>
+
+
+{% endblock %}

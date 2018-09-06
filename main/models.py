@@ -33,7 +33,7 @@ class User(AbstractUser):
     location = models.CharField(verbose_name  ='العنوان',max_length = 50)
     username = models.CharField(verbose_name  ='رقم الهاتف',unique=True,max_length=8)
     phone_regex = RegexValidator(regex=r'^\d{8}$', message="يجب أن تحتوي أرقام الهاتف على 8 أرقام.")
-    phone_number = models.CharField(verbose_name  ='الهاتف',validators=[phone_regex], max_length=8,unique=True)
+    phone_number = models.CharField(verbose_name  ='الهاتف',validators=[phone_regex], max_length=8)
     city = models.CharField(verbose_name  ='المدينة',max_length=25, choices=enums.CITY_CHOICES)
 
     def get_absolute_url(self):
@@ -44,7 +44,7 @@ class User(AbstractUser):
 
     @property
     def name(self):
-         return f'{self.first_name} {self.last_name} ({self.phone_number})'
+         return f'{self.first_name} {self.last_name} ({self.username})'
 
     class Meta:
         ordering = ['created_at']
@@ -52,9 +52,10 @@ class User(AbstractUser):
         verbose_name_plural = "المستخدمين"
 
 def create_phone(sender, **kwargs):
-    user=kwargs['instance']
-    user.phone_number=user.username
-    user.save()
+    if kwargs['created']:
+        user=kwargs['instance']
+        user.phone_number = 00000000
+        user.save()
 
 post_save.connect(create_phone, sender=User)
 
@@ -147,14 +148,14 @@ def get_client():
 
 def form_processing(form,user):
     data = form.cleaned_data
-    from_ag_num = user.phone_number
+    from_ag_num = user.username
     to_ag_num = data['to_agent_number']
     money = data['money']
     fee = data['fee']
     cl_num = data['beneficiary_number']
 
-    from_ag =  User.objects.filter(phone_number=from_ag_num).first()
-    to_ag =  User.objects.filter(phone_number=to_ag_num).first()
+    from_ag =  User.objects.filter(username=from_ag_num).first()
+    to_ag =  User.objects.filter(username=to_ag_num).first()
 
     cl_msg = f'يمكنكم من الأن سحب مبلغ {money} عن طريل مكتب غزة {to_ag}'
     to_ag_msg =f'صاحب الرقم {cl_num} يملك {money} مودعة عن طريق {from_ag}'
@@ -211,8 +212,8 @@ def req_is_valid(request):
     body_ = body.split('*')
     from_ag_num = request.POST.get('From')[-8:]
     to_ag_num = body_[3]
-    from_ag =  User.objects.filter(phone_number=from_ag_num).first()
-    to_ag =  User.objects.filter(phone_number=to_ag_num).first()
+    from_ag =  User.objects.filter(username=from_ag_num).first()
+    to_ag =  User.objects.filter(username=to_ag_num).first()
     if from_ag is None or to_ag is None or len(body.split("*"))!=4:
         return False
     else:
@@ -236,8 +237,8 @@ def in_req_clean(request):
     body_ = body.split("*")
     from_ag_num = from_[-8:]
     cl_num, money,fee ,to_ag_num = body_[0],body_[1],body_[2],body_[3]
-    from_ag =  User.objects.filter(phone_number=from_ag_num).first()
-    to_ag =  User.objects.filter(phone_number=to_ag_num).first()
+    from_ag =  User.objects.filter(username=from_ag_num).first()
+    to_ag =  User.objects.filter(username=to_ag_num).first()
 
     cl_msg = f'يمكنكم من الأن سحب مبلغ {money} عن طريل مكتب غزة {to_ag}'
     to_ag_msg =f'صاحب الرقم {cl_num} يملك {money} مودعة عن طريق {from_ag}'
